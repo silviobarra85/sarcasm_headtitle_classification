@@ -1,3 +1,4 @@
+texttable
 scikit-learn
 matplotlib
 pandas
