@@ -1,4 +1,3 @@
-from src.datacollector import *
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.naive_bayes import *
@@ -12,16 +11,20 @@ from sklearn import metrics
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
 from texttable import Texttable
+import pandas as pd
 
+def loadDataFromPath(path):
+    df = pd.read_json(path_or_buf=path, lines=True, encoding='utf-8')
+
+    return df
 
 # DATASET INGLESE
-# df = loadDataFromPath("data/Sarcasm_Headlines_Dataset_v2.json")
+# df = loadDataFromPath("../data/Sarcasm_Headlines_Dataset_v2.json")
 
 # DATASET ITALIANO
 df = loadDataFromPath("../data/italian_headline.json")
 df_not_sarcatic = df[df.is_sarcastic == 0]
 df_sarcatic = df[df.is_sarcastic == 1]
-
 df = pd.concat([df_sarcatic, df_not_sarcatic[:10222]])
 
 X_train, X_test, y_train, y_test = train_test_split(df['headline'], df['is_sarcastic'], test_size=0.33, random_state=42)
