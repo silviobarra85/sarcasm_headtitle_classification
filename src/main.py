@@ -101,7 +101,7 @@ parameters = [{
         'tfidf__sublinear_tf': (True, False),
         'tfidf__smooth_idf': (True, False),
         'tfidf__norm': ('l1', 'l2'),
-        'clf__alpha': (1e-2, 1e-3),
+        'clf__kernel': ('linear', 'poly', 'rbf', 'sigmoid', 'precomputed')
     },
     {
         'clf': [KMeans(n_clusters=2)],
@@ -127,7 +127,7 @@ parameters = [{
     }
 ]
 
-gs_clf = GridSearchCV(text_clf, parameters, cv=5, iid=False, n_jobs=-1)
+gs_clf = GridSearchCV(text_clf, parameters, cv=5, iid=False, n_jobs=-1, verbose=2)
 
 gs_clf = gs_clf.fit(X_train, y_train)
 
