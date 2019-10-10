@@ -46,7 +46,7 @@ parameters = [{
         'tfidf__sublinear_tf': (True, False),
         'tfidf__smooth_idf': (True, False),
         'tfidf__norm': ('l1', 'l2'),
-        'clf__alpha': (0.0, 1e-2, 1e-3),
+        'clf__alpha': (1e-2, 1e-3),
     },
     {
         # ALL PARAMS READY TO RUN
@@ -58,7 +58,7 @@ parameters = [{
         'tfidf__sublinear_tf': (True, False),
         'tfidf__smooth_idf': (True, False),
         'tfidf__norm': ('l1', 'l2'),
-        'clf__alpha': (0.0, 1e-2, 1e-3),
+        'clf__alpha': (1e-2, 1e-3),
         'clf__norm': ('l1', 'l2')
     },
     {
@@ -71,12 +71,12 @@ parameters = [{
         'tfidf__sublinear_tf': (True, False),
         'tfidf__smooth_idf': (True, False),
         'tfidf__norm': ('l1', 'l2'),
-        'clf__alpha': (0.0, 1e-2, 1e-3),
+        'clf__alpha': (1e-2, 1e-3),
         'clf__binarize': (0.0, 1.0),
     },
     {
         # ALL PARAMS READY TO RUN
-        'clf': [SGDClassifier(penalty='l2', max_iter=1000, tol=1e-3, n_jobs=-1)],
+        'clf': [SGDClassifier(penalty='l2', max_iter=1000, tol=1e-3)],
         'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
         'vect__max_df': np.arange(0.1, 1.0, 0.1),
         'vect__min_df': np.arange(1, 6, 1),
