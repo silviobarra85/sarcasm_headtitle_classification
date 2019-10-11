@@ -37,7 +37,7 @@ text_clf = Pipeline([
 ])
 
 parameters = [{
-        # ALL PARAMS READY TO RUN
+        # ALL PARAMS READY TO RUN 0
         'clf': [MultinomialNB()],
         'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
         'vect__max_df': np.arange(0.1, 1.0, 0.1),
@@ -49,7 +49,7 @@ parameters = [{
         'clf__alpha': (1e-2, 1e-3),
     },
     {
-        # ALL PARAMS READY TO RUN
+        # ALL PARAMS READY TO RUN 1
         'clf': [ComplementNB()],
         'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
         'vect__max_df': np.arange(0.1, 1.0, 0.1),
@@ -62,7 +62,7 @@ parameters = [{
         'clf__norm': ('l1', 'l2')
     },
     {
-        # ALL PARAMS READY TO RUN
+        # ALL PARAMS READY TO RUN 2
         'clf': [BernoulliNB()],
         'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
         'vect__max_df': np.arange(0.1, 1.0, 0.1),
@@ -75,7 +75,7 @@ parameters = [{
         'clf__binarize': (0.0, 1.0),
     },
     {
-        # ALL PARAMS READY TO RUN
+        # ALL PARAMS READY TO RUN 3
         'clf': [SGDClassifier(penalty='l2', max_iter=1000, tol=1e-3)],
         'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
         'vect__max_df': np.arange(0.1, 1.0, 0.1),
@@ -100,7 +100,8 @@ parameters = [{
         'clf__average': (True, False)
     },
     {
-        'clf': [SVC(gamma='auto')],
+        # ALL PARAMS READY TO RUN 4
+        'clf': [SVC(gamma='auto', tol=1e-3, cache_size=700, random_state=42)],
         'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
         'vect__max_df': np.arange(0.1, 1.0, 0.1),
         'vect__min_df': np.arange(1, 6, 1),
@@ -108,7 +109,37 @@ parameters = [{
         'tfidf__sublinear_tf': (True, False),
         'tfidf__smooth_idf': (True, False),
         'tfidf__norm': ('l1', 'l2'),
-        'clf__kernel': ('linear', 'poly', 'rbf', 'sigmoid', 'precomputed')
+        'clf__kernel': ('linear', 'rbf', 'precomputed'),
+        'clf__shrinking': (True, False)
+    },
+    {
+        # ALL PARAMS READY TO RUN 5
+        # ONLY KERNEL=POLY
+        'clf': [SVC(gamma='auto', tol=1e-3, cache_size=700, random_state=42, kernel='poly')],
+        'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
+        'vect__max_df': np.arange(0.1, 1.0, 0.1),
+        'vect__min_df': np.arange(1, 6, 1),
+        'tfidf__use_idf': (True, False),
+        'tfidf__sublinear_tf': (True, False),
+        'tfidf__smooth_idf': (True, False),
+        'tfidf__norm': ('l1', 'l2'),
+        'clf__degree': np.arange(1, 6, 1),
+        'clf__coef0': np.arange(0.0, 1.1, 0.1),
+        'clf__shrinking': (True, False)
+    },
+    {
+        # ALL PARAMS READY TO RUN 6
+        # ONLY KERNEL=SIGMOID
+        'clf': [SVC(gamma='auto', tol=1e-3, cache_size=700, random_state=42, kernel='sigmoid')],
+        'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
+        'vect__max_df': np.arange(0.1, 1.0, 0.1),
+        'vect__min_df': np.arange(1, 6, 1),
+        'tfidf__use_idf': (True, False),
+        'tfidf__sublinear_tf': (True, False),
+        'tfidf__smooth_idf': (True, False),
+        'tfidf__norm': ('l1', 'l2'),
+        'clf__coef0': np.arange(0.0, 1.1, 0.1),
+        'clf__shrinking': (True, False)
     },
     {
         'clf': [KMeans(n_clusters=2)],
