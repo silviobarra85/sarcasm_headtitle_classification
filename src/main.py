@@ -34,7 +34,7 @@ text_clf = Pipeline([
     ('vect', CountVectorizer()),
     ('tfidf', TfidfTransformer()),
     ('clf', MultinomialNB()),
-], memory='../pipeline_cache')
+])
 
 parameters = [{
         # ALL PARAMS READY TO RUN 0
@@ -59,7 +59,7 @@ parameters = [{
         # 'tfidf__smooth_idf': (True, False),
         # 'tfidf__norm': ('l1', 'l2'),
         'clf__alpha': (1e-2, 1e-3),
-        'clf__norm': ('l1', 'l2')
+        # 'clf__norm': ('l1', 'l2')
     },
     {
         # ALL PARAMS READY TO RUN 2
@@ -201,3 +201,5 @@ t.add_rows([["", "Is not Sarcastic (PREDICTED)", "Is Sarcastic (PREDICTED)", "TO
               ["TOTAL", confusion_matrix[0][0] + confusion_matrix[1][0], confusion_matrix[0][1] + confusion_matrix[1][1],
               confusion_matrix[0][0] + confusion_matrix[1][0] + confusion_matrix[0][1] + confusion_matrix[1][1]]])
 print(t.draw())
+
+print(gs_clf.best_estimator_)
