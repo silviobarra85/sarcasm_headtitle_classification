@@ -12,6 +12,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
 from texttable import Texttable
 import pandas as pd
+import re
 
 def loadDataFromPath(path):
     df = pd.read_json(path_or_buf=path, lines=True, encoding='utf-8')
@@ -183,16 +184,16 @@ parameters = [{
     }
 ]
 
-gs_clf = GridSearchCV(text_clf, parameters, cv=5, iid=False, n_jobs=-1, verbose=2, error_score=0)
+gs_clf = GridSearchCV(text_clf, parameters[0], cv=5, iid=False, n_jobs=-1, verbose=51, error_score=0)
 
 gs_clf = gs_clf.fit(X_train, y_train)
 
 # test
 predict = gs_clf.predict(X_test)
-
-print(gs_clf.best_estimator_._final_estimator,  np.mean(predict == y_test))
-
-print(metrics.classification_report(y_test, predict))
+numpy_mean = np.mean(predict == y_test)
+print(gs_clf.best_estimator_._final_estimator,  numpy_mean)
+classification_report = metrics.classification_report(y_test, predict)
+print(classification_report)
 confusion_matrix = metrics.confusion_matrix(y_test, predict)
 t = Texttable()
 t.add_rows([["", "Is not Sarcastic (PREDICTED)", "Is Sarcastic (PREDICTED)", "TOTAL"],
@@ -203,3 +204,18 @@ t.add_rows([["", "Is not Sarcastic (PREDICTED)", "Is Sarcastic (PREDICTED)", "TO
 print(t.draw())
 
 print(gs_clf.best_estimator_)
+
+# Salvataggio su file dei risultati come da output console
+
+file_name = re.search("^[\word]*", gs_clf.best_estimator_.steps[2][1].__str__()).group()
+if file_name == 'SVC':
+    file_result = open('../results/'+file_name+'_'+gs_clf.best_estimator_.steps[2][1].__getattribute__('kernel').__str__()+'.txt', 'w')
+else:
+    file_result = open('../results/'+file_name+'.txt', 'w')
+
+
+file_result.writelines([gs_clf.param_grid.__str__() + '\n', gs_clf.best_estimator_._final_estimator.__str__() + ' ',
+                        'NumPy Mean: ' + numpy_mean.__str__() + '\n', classification_report + '\n',
+                        t.draw() + '\n', gs_clf.best_estimator_.__str__() + '\n'])
+
+file_result.close()
