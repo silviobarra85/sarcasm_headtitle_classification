@@ -1,5 +1,6 @@
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.metrics import make_scorer, accuracy_score, f1_score
 from sklearn.naive_bayes import *
 from sklearn.linear_model import SGDClassifier
 from sklearn.svm import SVC
@@ -13,6 +14,8 @@ from sklearn.model_selection import train_test_split
 from texttable import Texttable
 import pandas as pd
 import re
+import pickle
+import matplotlib.pyplot as plt
 
 def loadDataFromPath(path):
     df = pd.read_json(path_or_buf=path, lines=True, encoding='utf-8')
@@ -43,7 +46,7 @@ parameters = [{
         'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
         'vect__max_df': np.arange(0.1, 1.1, 0.1),
         'vect__min_df': np.arange(0, 6, 1),
-        # 'tfidf__use_idf': (True, False),
+        'tfidf__use_idf': (True, False),
         # 'tfidf__sublinear_tf': (True, False),
         # 'tfidf__smooth_idf': (True, False),
         # 'tfidf__norm': ('l1', 'l2'),
@@ -55,7 +58,7 @@ parameters = [{
         'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
         'vect__max_df': np.arange(0.1, 1.1, 0.1),
         'vect__min_df': np.arange(0, 6, 1),
-        # 'tfidf__use_idf': (True, False),
+        'tfidf__use_idf': (True, False),
         # 'tfidf__sublinear_tf': (True, False),
         # 'tfidf__smooth_idf': (True, False),
         # 'tfidf__norm': ('l1', 'l2'),
@@ -68,7 +71,7 @@ parameters = [{
         'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
         'vect__max_df': np.arange(0.1, 1.1, 0.1),
         'vect__min_df': np.arange(0, 6, 1),
-        # 'tfidf__use_idf': (True, False),
+        'tfidf__use_idf': (True, False),
         # 'tfidf__sublinear_tf': (True, False),
         # 'tfidf__smooth_idf': (True, False),
         # 'tfidf__norm': ('l1', 'l2'),
@@ -81,7 +84,7 @@ parameters = [{
         'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
         'vect__max_df': np.arange(0.1, 1.1, 0.1),
         'vect__min_df': np.arange(0, 6, 1),
-        # 'tfidf__use_idf': (True, False),
+        'tfidf__use_idf': (True, False),
         # 'tfidf__sublinear_tf': (True, False),
         # 'tfidf__smooth_idf': (True, False),
         # 'tfidf__norm': ('l1', 'l2'),
@@ -106,7 +109,7 @@ parameters = [{
         'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
         'vect__max_df': np.arange(0.1, 1.1, 0.1),
         'vect__min_df': np.arange(0, 6, 1),
-        # 'tfidf__use_idf': (True, False),
+        'tfidf__use_idf': (True, False),
         # 'tfidf__sublinear_tf': (True, False),
         # 'tfidf__smooth_idf': (True, False),
         # 'tfidf__norm': ('l1', 'l2'),
@@ -120,7 +123,7 @@ parameters = [{
         'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
         'vect__max_df': np.arange(0.1, 1.1, 0.1),
         'vect__min_df': np.arange(0, 6, 1),
-        # 'tfidf__use_idf': (True, False),
+        'tfidf__use_idf': (True, False),
         # 'tfidf__sublinear_tf': (True, False),
         # 'tfidf__smooth_idf': (True, False),
         # 'tfidf__norm': ('l1', 'l2'),
@@ -135,7 +138,7 @@ parameters = [{
         'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
         'vect__max_df': np.arange(0.1, 1.1, 0.1),
         'vect__min_df': np.arange(0, 6, 1),
-        # 'tfidf__use_idf': (True, False),
+        'tfidf__use_idf': (True, False),
         # 'tfidf__sublinear_tf': (True, False),
         # 'tfidf__smooth_idf': (True, False),
         # 'tfidf__norm': ('l1', 'l2'),
@@ -149,7 +152,7 @@ parameters = [{
         'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
         'vect__max_df': np.arange(0.1, 1.1, 0.1),
         'vect__min_df': np.arange(0, 6, 1),
-        # 'tfidf__use_idf': (True, False),
+        'tfidf__use_idf': (True, False),
         # 'tfidf__sublinear_tf': (True, False),
         # 'tfidf__smooth_idf': (True, False),
         # 'tfidf__norm': ('l1', 'l2'),
@@ -165,7 +168,7 @@ parameters = [{
         'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
         'vect__max_df': np.arange(0.1, 1.1, 0.1),
         'vect__min_df': np.arange(0, 6, 1),
-        # 'tfidf__use_idf': (True, False),
+        'tfidf__use_idf': (True, False),
         # 'tfidf__sublinear_tf': (True, False),
         # 'tfidf__smooth_idf': (True, False),
         # 'tfidf__norm': ('l1', 'l2'),
@@ -183,8 +186,9 @@ parameters = [{
         # 'clf__presort': (True, False)
     }
 ]
-
-gs_clf = GridSearchCV(text_clf, parameters[0], cv=5, iid=False, n_jobs=-1, verbose=51, error_score=0)
+scoring = {'AUC': 'roc_auc', 'Accuracy': make_scorer(accuracy_score), 'F1-Score': make_scorer(f1_score)}
+gs_clf = GridSearchCV(text_clf, parameters[0], cv=5, iid=False, n_jobs=-1, verbose=51, error_score=0,
+                      scoring=scoring, refit='AUC', return_train_score=True)
 
 gs_clf = gs_clf.fit(X_train, y_train)
 
@@ -219,3 +223,49 @@ file_result.writelines([gs_clf.param_grid.__str__() + '\n', gs_clf.best_estimato
                         t.draw() + '\n', gs_clf.best_estimator_.__str__() + '\n'])
 
 file_result.close()
+
+# Scrittura su file del dell'attributo cv_results_ di gs_clf (GridSearch)
+if file_name == 'SVC':
+    file_cv_results = open('../results/'+file_name+'_'+gs_clf.best_estimator_.steps[2][1].__getattribute__('kernel').__str__()+'_cv_results.pck', 'wb')
+else:
+    file_cv_results = open('../results/'+file_name+'_cv_results.pck', 'wb')
+
+pickle.dump(gs_clf.cv_results_, file_cv_results)
+
+# Per il recupero dell'intera struttura cv_results_ generata dal GridSearch
+# file_cv_results = open('../results/NOMEFILE_cv_results.pck', 'rb')
+# prova_lettura = pickle.load(file_cv_results)
+
+
+plt.figure(figsize=(30, 20))
+plt.title("GridSearchCV evaluating using multiple scorers simultaneously", fontsize=16)
+plt.xlabel("Tests")
+plt.ylabel("Score")
+ax = plt.gca()
+ax.set_ylim(0.75, 1)
+plt.grid(False)
+plt.plot(gs_clf.cv_results_.get('mean_test_AUC'))
+plt.plot(gs_clf.cv_results_.get('mean_test_Accuracy'))
+plt.plot(gs_clf.cv_results_.get('mean_test_F1-Score'))
+
+X_axis = np.arange(0, gs_clf.cv_results_.get('mean_test_AUC').__len__(), 1)
+
+for scorer, color in zip(sorted(scoring), ['g', 'k', 'b']):
+    best_index = np.nonzero(gs_clf.cv_results_['rank_test_%s' % scorer] == 1)[0][0]
+    best_score = gs_clf.cv_results_['mean_test_%s' % scorer][best_index]
+
+    # Plot di una linea tratteggiata sull'ascissa del best score
+    ax.plot([X_axis[best_index], ] * 2, [0, best_score],
+            linestyle='-.', color=color, marker='x', markeredgewidth=3, ms=8)
+
+    # Scrittura del valore migliore
+    ax.annotate("%0.2f" % best_score,
+                (X_axis[best_index], best_score))
+plt.legend(['AUC', 'Accuracy', 'F1-Score'])
+plt.savefig('../results/'+file_name+'.png')
+if file_name == 'SVC':
+    plt.savefig('../results/'+file_name+'_'+gs_clf.best_estimator_.steps[2][1].__getattribute__('kernel').__str__()+'.png')
+else:
+    plt.savefig('../results/'+file_name+'.png')
+plt.show()
+plt.close()
