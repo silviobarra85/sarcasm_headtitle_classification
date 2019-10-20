@@ -97,10 +97,10 @@ parameters = [{
         # 'clf__tol': (1e-2, 1e-3),
         'clf__shuffle': (True, False),
         # 'clf__eta0': np.arange(0.0, 1.1, 0.1),
-        'clf__power_t': np.arange(0.0, 1.1, 0.1),
+        # 'clf__power_t': np.arange(0.0, 1.1, 0.1),
         'clf__early_stopping': (True, False),
-        'clf__validation_fraction': np.arange(0.1, 1.1, 0.1),
-        'clf__n_iter_no_change': np.arange(2, 8, 1),
+        # 'clf__validation_fraction': np.arange(0.1, 1.1, 0.1),
+        # 'clf__n_iter_no_change': np.arange(2, 8, 1),
         'clf__average': (True, False)
     },
     {
