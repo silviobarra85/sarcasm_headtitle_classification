@@ -221,7 +221,6 @@ else:
 file_result.writelines([gs_clf.param_grid.__str__() + '\n', gs_clf.best_estimator_._final_estimator.__str__() + ' ',
                         'NumPy Mean: ' + numpy_mean.__str__() + '\n', classification_report + '\n',
                         t.draw() + '\n', gs_clf.best_estimator_.__str__() + '\n'])
-
 file_result.close()
 
 # Scrittura su file del dell'attributo cv_results_ di gs_clf (GridSearch)
@@ -231,6 +230,7 @@ else:
     file_cv_results = open('../results/'+file_name+'_cv_results.pck', 'wb')
 
 pickle.dump(gs_clf.cv_results_, file_cv_results)
+file_cv_results.close()
 
 # Per il recupero dell'intera struttura cv_results_ generata dal GridSearch
 # file_cv_results = open('../results/NOMEFILE_cv_results.pck', 'rb')
