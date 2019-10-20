@@ -9,7 +9,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.pipeline import Pipeline
 import numpy as np
 from sklearn import metrics
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.model_selection import train_test_split
 from texttable import Texttable
 import pandas as pd
@@ -41,17 +41,17 @@ text_clf = Pipeline([
 ])
 
 parameters = [{
-        # ALL PARAMS READY TO RUN 0
-        'clf': [MultinomialNB()],
-        'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
-        'vect__max_df': np.arange(0.1, 1.1, 0.1),
-        'vect__min_df': np.arange(0, 6, 1),
-        'tfidf__use_idf': (True, False),
-        # 'tfidf__sublinear_tf': (True, False),
-        # 'tfidf__smooth_idf': (True, False),
-        # 'tfidf__norm': ('l1', 'l2'),
-        'clf__alpha': (1e-2, 1e-3),
-    },
+    # ALL PARAMS READY TO RUN 0
+    'clf': [MultinomialNB()],
+    'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
+    'vect__max_df': np.arange(0.1, 1.1, 0.1),
+    'vect__min_df': np.arange(0, 6, 1),
+    'tfidf__use_idf': (True, False),
+    # 'tfidf__sublinear_tf': (True, False),
+    # 'tfidf__smooth_idf': (True, False),
+    # 'tfidf__norm': ('l1', 'l2'),
+    'clf__alpha': (1e-2, 1e-3),
+},
     {
         # ALL PARAMS READY TO RUN 1
         'clf': [ComplementNB()],
@@ -187,49 +187,49 @@ parameters = [{
     }
 ]
 scoring = {'AUC': 'roc_auc', 'Accuracy': make_scorer(accuracy_score), 'F1-Score': make_scorer(f1_score)}
-gs_clf = GridSearchCV(text_clf, parameters[0], cv=5, iid=False, n_jobs=-1, verbose=51, error_score=0,
-                      scoring=scoring, refit='AUC', return_train_score=True)
+rs_clf = RandomizedSearchCV(text_clf, parameters[3], cv=5, iid=False, n_jobs=-1, verbose=51, error_score=0,
+                            scoring=scoring, refit='AUC', return_train_score=True, n_iter=1000)
 
-gs_clf = gs_clf.fit(X_train, y_train)
+rs_clf = rs_clf.fit(X_train, y_train)
 
 # test
-predict = gs_clf.predict(X_test)
+predict = rs_clf.predict(X_test)
 numpy_mean = np.mean(predict == y_test)
-print(gs_clf.best_estimator_._final_estimator,  numpy_mean)
+print(rs_clf.best_estimator_._final_estimator, numpy_mean)
 classification_report = metrics.classification_report(y_test, predict)
 print(classification_report)
 confusion_matrix = metrics.confusion_matrix(y_test, predict)
 t = Texttable()
 t.add_rows([["", "Is not Sarcastic (PREDICTED)", "Is Sarcastic (PREDICTED)", "TOTAL"],
             ["Is not Sarcastic (REAL)", confusion_matrix[0][0], confusion_matrix[0][1], confusion_matrix[0][0] + confusion_matrix[0][1]],
-              ["Is Sarcastic (REAL)", confusion_matrix[1][0], confusion_matrix[1][1], confusion_matrix[1][0] + confusion_matrix[1][1]],
-              ["TOTAL", confusion_matrix[0][0] + confusion_matrix[1][0], confusion_matrix[0][1] + confusion_matrix[1][1],
-              confusion_matrix[0][0] + confusion_matrix[1][0] + confusion_matrix[0][1] + confusion_matrix[1][1]]])
+            ["Is Sarcastic (REAL)", confusion_matrix[1][0], confusion_matrix[1][1], confusion_matrix[1][0] + confusion_matrix[1][1]],
+            ["TOTAL", confusion_matrix[0][0] + confusion_matrix[1][0], confusion_matrix[0][1] + confusion_matrix[1][1],
+             confusion_matrix[0][0] + confusion_matrix[1][0] + confusion_matrix[0][1] + confusion_matrix[1][1]]])
 print(t.draw())
 
-print(gs_clf.best_estimator_)
+print(rs_clf.best_estimator_)
 
 # Salvataggio su file dei risultati come da output console
 
-file_name = re.search("^[\word]*", gs_clf.best_estimator_.steps[2][1].__str__()).group()
+file_name = re.search("^[\word]*", rs_clf.best_estimator_.steps[2][1].__str__()).group()
 if file_name == 'SVC':
-    file_result = open('../results/'+file_name+'_'+gs_clf.best_estimator_.steps[2][1].__getattribute__('kernel').__str__()+'.txt', 'w')
+    file_result = open('../results/' + file_name +'_' + rs_clf.best_estimator_.steps[2][1].__getattribute__('kernel').__str__() + '.txt', 'w')
 else:
     file_result = open('../results/'+file_name+'.txt', 'w')
 
 
-file_result.writelines([gs_clf.param_grid.__str__() + '\n', gs_clf.best_estimator_._final_estimator.__str__() + ' ',
+file_result.writelines([rs_clf.param_distributions.__str__() + '\n', rs_clf.best_estimator_._final_estimator.__str__() + ' ',
                         'NumPy Mean: ' + numpy_mean.__str__() + '\n', classification_report + '\n',
-                        t.draw() + '\n', gs_clf.best_estimator_.__str__() + '\n'])
+                        t.draw() + '\n', rs_clf.best_estimator_.__str__() + '\n'])
 file_result.close()
 
 # Scrittura su file del dell'attributo cv_results_ di gs_clf (GridSearch)
 if file_name == 'SVC':
-    file_cv_results = open('../results/'+file_name+'_'+gs_clf.best_estimator_.steps[2][1].__getattribute__('kernel').__str__()+'_cv_results.pck', 'wb')
+    file_cv_results = open('../results/' + file_name +'_' + rs_clf.best_estimator_.steps[2][1].__getattribute__('kernel').__str__() + '_cv_results.pck', 'wb')
 else:
     file_cv_results = open('../results/'+file_name+'_cv_results.pck', 'wb')
 
-pickle.dump(gs_clf.cv_results_, file_cv_results)
+pickle.dump(rs_clf.cv_results_, file_cv_results)
 file_cv_results.close()
 
 # Per il recupero dell'intera struttura cv_results_ generata dal GridSearch
@@ -244,15 +244,15 @@ plt.ylabel("Score")
 ax = plt.gca()
 ax.set_ylim(0.75, 1)
 plt.grid(False)
-plt.plot(gs_clf.cv_results_.get('mean_test_AUC'))
-plt.plot(gs_clf.cv_results_.get('mean_test_Accuracy'))
-plt.plot(gs_clf.cv_results_.get('mean_test_F1-Score'))
+plt.plot(rs_clf.cv_results_.get('mean_test_AUC'))
+plt.plot(rs_clf.cv_results_.get('mean_test_Accuracy'))
+plt.plot(rs_clf.cv_results_.get('mean_test_F1-Score'))
 
-X_axis = np.arange(0, gs_clf.cv_results_.get('mean_test_AUC').__len__(), 1)
+X_axis = np.arange(0, rs_clf.cv_results_.get('mean_test_AUC').__len__(), 1)
 
 for scorer, color in zip(sorted(scoring), ['g', 'k', 'b']):
-    best_index = np.nonzero(gs_clf.cv_results_['rank_test_%s' % scorer] == 1)[0][0]
-    best_score = gs_clf.cv_results_['mean_test_%s' % scorer][best_index]
+    best_index = np.nonzero(rs_clf.cv_results_['rank_test_%s' % scorer] == 1)[0][0]
+    best_score = rs_clf.cv_results_['mean_test_%s' % scorer][best_index]
 
     # Plot di una linea tratteggiata sull'ascissa del best score
     ax.plot([X_axis[best_index], ] * 2, [0, best_score],
@@ -264,7 +264,7 @@ for scorer, color in zip(sorted(scoring), ['g', 'k', 'b']):
 plt.legend(['AUC', 'Accuracy', 'F1-Score'])
 plt.savefig('../results/'+file_name+'.png')
 if file_name == 'SVC':
-    plt.savefig('../results/'+file_name+'_'+gs_clf.best_estimator_.steps[2][1].__getattribute__('kernel').__str__()+'.png')
+    plt.savefig('../results/' + file_name +'_' + rs_clf.best_estimator_.steps[2][1].__getattribute__('kernel').__str__() + '.png')
 else:
     plt.savefig('../results/'+file_name+'.png')
 plt.show()
