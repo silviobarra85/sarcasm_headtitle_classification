@@ -1,0 +1,52 @@
+{'clf': [SGDClassifier(alpha=0.0001, average=False, class_weight=None,
+              early_stopping=False, epsilon=0.1, eta0=0.0, fit_intercept=True,
+              l1_ratio=0.15, learning_rate='optimal', loss='modified_huber',
+              max_iter=1000, n_iter_no_change=5, n_jobs=None, penalty='l2',
+              power_t=0.5, random_state=None, shuffle=True, tol=0.001,
+              validation_fraction=0.1, verbose=0, warm_start=False)], 'vect__ngram_range': [(1, 1), (1, 2), (1, 3)], 'vect__max_df': array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ]), 'vect__min_df': array([0, 1, 2, 3, 4, 5]), 'tfidf__use_idf': (True, False), 'clf__loss': ('hinge', 'log', 'modified_huber', 'squared_hinge', 'perceptron'), 'clf__alpha': (0.001, 0.0001, 1e-05), 'clf__fit_intercept': (True, False), 'clf__shuffle': (True, False), 'clf__early_stopping': (True, False), 'clf__average': (True, False)}
+SGDClassifier(alpha=0.0001, average=False, class_weight=None,
+              early_stopping=False, epsilon=0.1, eta0=0.0, fit_intercept=True,
+              l1_ratio=0.15, learning_rate='optimal', loss='modified_huber',
+              max_iter=1000, n_iter_no_change=5, n_jobs=None, penalty='l2',
+              power_t=0.5, random_state=None, shuffle=True, tol=0.001,
+              validation_fraction=0.1, verbose=0, warm_start=False) NumPy Mean: 0.8814287831628872
+              precision    recall  f1-score   support
+
+           0       0.89      0.87      0.88      3353
+           1       0.88      0.89      0.88      3394
+
+    accuracy                           0.88      6747
+   macro avg       0.88      0.88      0.88      6747
+weighted avg       0.88      0.88      0.88      6747
+
++-----------------------+-----------------------+----------------------+-------+
+|                       |   Is not Sarcastic    |     Is Sarcastic     | TOTAL |
+|                       |      (PREDICTED)      |     (PREDICTED)      |       |
++=======================+=======================+======================+=======+
+| Is not Sarcastic      | 2927                  | 426                  | 3353  |
+| (REAL)                |                       |                      |       |
++-----------------------+-----------------------+----------------------+-------+
+| Is Sarcastic (REAL)   | 374                   | 3020                 | 3394  |
++-----------------------+-----------------------+----------------------+-------+
+| TOTAL                 | 3301                  | 3446                 | 6747  |
++-----------------------+-----------------------+----------------------+-------+
+Pipeline(memory=None,
+         steps=[('vect',
+                 CountVectorizer(analyzer='word', binary=False,
+                                 decode_error='strict',
+                                 dtype=<class 'numpy.int64'>, encoding='utf-8',
+                                 input='content', lowercase=True, max_df=0.6,
+                                 max_features=None, min_df=2,
+                                 ngram_range=(1, 3), preprocessor=None,
+                                 stop_words=None, strip_accents=None,
+                                 token_pattern='(?u)\\b\\w\\w+\\b',
+                                 tokenizer=None, vocabulary=Non...
+                 SGDClassifier(alpha=0.0001, average=False, class_weight=None,
+                               early_stopping=False, epsilon=0.1, eta0=0.0,
+                               fit_intercept=True, l1_ratio=0.15,
+                               learning_rate='optimal', loss='modified_huber',
+                               max_iter=1000, n_iter_no_change=5, n_jobs=None,
+                               penalty='l2', power_t=0.5, random_state=None,
+                               shuffle=True, tol=0.001, validation_fraction=0.1,
+                               verbose=0, warm_start=False))],
+         verbose=False)
