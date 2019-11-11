@@ -146,23 +146,6 @@ parameters = [{
         'clf__shrinking': (True, False)
     },
     {
-        # ALL PARAMS READY TO RUN 7
-        'clf': [KMeans(n_clusters=2, init='k-means++', n_init=10, max_iter=300,
-                       tol=1e-4, precompute_distances='auto', copy_x=True)],
-        'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
-        'vect__max_df': np.arange(0.1, 1.1, 0.1),
-        'vect__min_df': np.arange(0, 6, 1),
-        'tfidf__use_idf': (True, False),
-        # 'tfidf__sublinear_tf': (True, False),
-        # 'tfidf__smooth_idf': (True, False),
-        # 'tfidf__norm': ('l1', 'l2'),
-        # 'clf__n_init': (10, 15),
-        # 'clf__max_iter': (300),
-        # 'clf__tol': (1e-4),
-        # 'clf__precompute_distances': ('auto', True, False),
-        # 'clf__copy_x': (True, False),      # with precompute_distances=True
-    },
-    {
         # ALL PARAMS READY TO RUN 8
         'clf': [DecisionTreeClassifier(presort=False)],
         'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
