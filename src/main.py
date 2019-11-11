@@ -146,7 +146,7 @@ parameters = [{
         'clf__shrinking': (True, False)
     },
     {
-        # ALL PARAMS READY TO RUN 8
+        # ALL PARAMS READY TO RUN 7
         'clf': [DecisionTreeClassifier(presort=False)],
         'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
         'vect__max_df': np.arange(0.1, 1.1, 0.1),
@@ -158,14 +158,14 @@ parameters = [{
         'clf__criterion': ('gini', 'entropy'),
         'clf__splitter': ('best', 'random'),
         # 'clf__max_depth': (None, '%INTEGER'),
-        'clf__min_samples_split': np.arange(2, 7, 1),
-        'clf__min_samples_leaf': np.arange(1, 6, 1),
+        # 'clf__min_samples_split': np.arange(2, 7, 1),
+        # 'clf__min_samples_leaf': np.arange(1, 6, 1),
         # 'clf__min_weight_fraction_leaf': (0.),
-        'clf__max_features': ('auto', 'log2', None, np.arange(0.1, 1.1, 0.1)),
+        'clf__max_features': ('auto', 'log2', None),
         # 'clf__random_state': (None),
         # 'clf__max_leaf_nodes': (None),
         # 'clf__min_impurity_decrease': (0.),
-        'clf__class_weight': (None, 'balanced'),
+        # 'clf__class_weight': (None, 'balanced'),
         # 'clf__presort': (True, False)
     }
 ]

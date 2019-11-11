@@ -1,0 +1,56 @@
+{'clf': [DecisionTreeClassifier(class_weight=None, criterion='entropy', max_depth=None,
+                       max_features=None, max_leaf_nodes=None,
+                       min_impurity_decrease=0.0, min_impurity_split=None,
+                       min_samples_leaf=1, min_samples_split=2,
+                       min_weight_fraction_leaf=0.0, presort=False,
+                       random_state=None, splitter='random')], 'vect__ngram_range': [(1, 1), (1, 2), (1, 3)], 'vect__max_df': array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ]), 'vect__min_df': array([0, 1, 2, 3, 4, 5]), 'tfidf__use_idf': (True, False), 'clf__criterion': ('gini', 'entropy'), 'clf__splitter': ('best', 'random'), 'clf__max_features': ('auto', 'log2', None)}
+DecisionTreeClassifier(class_weight=None, criterion='entropy', max_depth=None,
+                       max_features=None, max_leaf_nodes=None,
+                       min_impurity_decrease=0.0, min_impurity_split=None,
+                       min_samples_leaf=1, min_samples_split=2,
+                       min_weight_fraction_leaf=0.0, presort=False,
+                       random_state=None, splitter='random') NumPy Mean: 0.7886468059878464
+              precision    recall  f1-score   support
+
+           0       0.77      0.81      0.79      3353
+           1       0.81      0.76      0.78      3394
+
+    accuracy                           0.79      6747
+   macro avg       0.79      0.79      0.79      6747
+weighted avg       0.79      0.79      0.79      6747
+
++-----------------------+-----------------------+----------------------+-------+
+|                       |   Is not Sarcastic    |     Is Sarcastic     | TOTAL |
+|                       |      (PREDICTED)      |     (PREDICTED)      |       |
++=======================+=======================+======================+=======+
+| Is not Sarcastic      | 2725                  | 628                  | 3353  |
+| (REAL)                |                       |                      |       |
++-----------------------+-----------------------+----------------------+-------+
+| Is Sarcastic (REAL)   | 798                   | 2596                 | 3394  |
++-----------------------+-----------------------+----------------------+-------+
+| TOTAL                 | 3523                  | 3224                 | 6747  |
++-----------------------+-----------------------+----------------------+-------+
+Pipeline(memory=None,
+         steps=[('vect',
+                 CountVectorizer(analyzer='word', binary=False,
+                                 decode_error='strict',
+                                 dtype=<class 'numpy.int64'>, encoding='utf-8',
+                                 input='content', lowercase=True, max_df=0.1,
+                                 max_features=None, min_df=2,
+                                 ngram_range=(1, 1), preprocessor=None,
+                                 stop_words=None, strip_accents=None,
+                                 token_pattern='(?u)\\b\\w\\w+\\b',
+                                 tokenizer=None, vocabulary=Non...
+                 TfidfTransformer(norm='l2', smooth_idf=True,
+                                  sublinear_tf=False, use_idf=False)),
+                ('clf',
+                 DecisionTreeClassifier(class_weight=None, criterion='entropy',
+                                        max_depth=None, max_features=None,
+                                        max_leaf_nodes=None,
+                                        min_impurity_decrease=0.0,
+                                        min_impurity_split=None,
+                                        min_samples_leaf=1, min_samples_split=2,
+                                        min_weight_fraction_leaf=0.0,
+                                        presort=False, random_state=None,
+                                        splitter='random'))],
+         verbose=False)
